@@ -76,42 +76,21 @@
 // })
 
 import express from "express";
+import requestLogger from "./middleware/logger.js";
+import routes from "./routes/taskRoute.js";
 
 const app = express();
 const PORT = 4000;
 app.use(express.json());
 
-// Get task
-app.get('/task',(req, res) =>{
-    res.send("this is all task");
-})
+// Register all task routes
+app.use("/", routes);
 
-// Create  task 
-app.post('/createtask', (req, res)=>{
-  const task = req.body;
-  res.status(201).json({
-    message: "task created Successfully", 
-    task: task
-});
-})
 
-// Update task
-app.put('/updatetask/:id', (req, res)=>{
-    const taskid= req.params.id;
-    const updatedTask = req.body;
-   res.status(200).json({
-        title: updatedTask.title,
-        id: taskid,
-        message: "Task updated"
-    });
-});
-// delete task
-app.delete('/deletetask/:id', (req, res)=>{
-    res.json({
-        id: req.params.id,
-        message: "Task deleted"
-    });
-});
+// Run the logger for every request
+app.use(requestLogger);
+
+
  
 app.listen(PORT, ()=>{
     console.log(`task is created on ${PORT}`)

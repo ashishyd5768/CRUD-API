@@ -1,4 +1,4 @@
-const Validatetaktitle = (rq, res, next) =>{
+const Validatetasktitle = (req, res, next) =>{
     const {title} = req.body;
     if (typeof title !== "string" || title.trim() === "") {
         return res.status(400).json({
