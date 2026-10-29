@@ -15,12 +15,9 @@ router.get("/task", (req, res) => {
     });
 });
 
-
 // GET: Read one task by ID
 router.get("/task/:id", (req, res) => {
-    const task = tasks.find(
-        (item) => item.id === req.params.id
-    );
+    const task = tasks.find((item) => item.id === req.params.id);
 
     if (!task) {
         return res.status(404).json({
@@ -30,14 +27,17 @@ router.get("/task/:id", (req, res) => {
 
     res.status(200).json({ task });
 });
-// Create  task 
-router.post('/createtask', Validatetasktitle, (req, res)=>{
-  const task = {
+
+// Create task
+router.post("/createtask", Validatetasktitle, (req, res) => {
+    const task = {
         id: randomUUID(),
         title: req.body.title.trim(),
         completed: false
     };
+
     tasks.push(task);
+
     res.status(201).json({
         message: "Task created successfully",
         task
@@ -45,10 +45,8 @@ router.post('/createtask', Validatetasktitle, (req, res)=>{
 });
 
 // Update task
-router.put('/updatetask/:id', (req, res)=>{
-    const task = tasks.find(
-        (item) => item.id === req.params.id
-    );
+router.put("/updatetask/:id", Validatetasktitle, (req, res) => {
+    const task = tasks.find((item) => item.id === req.params.id);
 
     if (!task) {
         return res.status(404).json({
@@ -63,11 +61,10 @@ router.put('/updatetask/:id', (req, res)=>{
         task
     });
 });
+
 // delete task
-router.delete('/deletetask/:id', (req, res)=>{
-    const index = tasks.findIndex(
-        (item) => item.id === req.params.id
-    );
+router.delete("/deletetask/:id", (req, res) => {
+    const index = tasks.findIndex((item) => item.id === req.params.id);
 
     if (index === -1) {
         return res.status(404).json({
@@ -83,5 +80,4 @@ router.delete('/deletetask/:id', (req, res)=>{
     });
 });
 
-
-export default  router;
+export default router;

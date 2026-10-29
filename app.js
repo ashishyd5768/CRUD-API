@@ -75,26 +75,54 @@
 //     console.log(`Server Runnin on ${PORT}`);
 // })
 
+
 import express from "express";
+import { pathToFileURL } from "node:url";
+import "dotenv/config";
+
 import requestLogger from "./middleware/logger.js";
 import routes from "./routes/taskRoute.js";
+import connectDB from "./config/db.js";
 
 const app = express();
-const PORT = 4000;
-app.use(express.json());
+const PORT = process.env.PORT || 4000;
 
-// Register all task routes
+app.use(express.json());
+app.use(requestLogger);
 app.use("/", routes);
 
+app.get("/", (req, res) => {
+    res.status(200).json({
+        message: "CRUD API is running",
+        routes: [
+            "GET /task",
+            "GET /task/:id",
+            "POST /createtask",
+            "PUT /updatetask/:id",
+            "DELETE /deletetask/:id"
+        ]
+    });
+});
 
-// Run the logger for every request
-app.use(requestLogger);
+const startServer = async () => {
+    try {
+        if (process.env.MONGODB_URI) {
+            await connectDB();
+        }
 
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error("Failed to start server:", error.message);
+        process.exit(1);
+    }
+};
 
- 
-app.listen(PORT, ()=>{
-    console.log(`task is created on ${PORT}`)
-})
+const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
+if (isDirectRun) {
+    startServer();
+}
 
 export default app;
